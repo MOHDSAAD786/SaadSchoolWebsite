@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Login</title>
+  <style>
+    body {
+      background: #e3f2fd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: sans-serif;
+    }
+    .login-form {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    .login-form h2 {
+      margin-bottom: 20px;
+      color: #1a237e;
+    }
+    .login-form input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .login-form button {
+      background-color: #1a237e;
+      color: white;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .login-form button:hover {
+      background-color: #3949ab;
+    }
+    .new-admission {
+      margin-top: 10px;
+      background-color: #00c853;
+    }
+    .new-admission:hover {
+      background-color: #43a047;
+    }
+  </style>
+</head>
+<body>
+  <form class="login-form" onsubmit="loginStudent(event)">
+    <h2>Student Login</h2>
+
+    <input type="text" id="rollno" name="rollNo" placeholder="Roll Number" required />
+    <input type="password" id="password" name="password" placeholder="Password" required />
+    
+    <button type="submit">Login</button>
+    
+    
+  </form>
+
+  <script>
+  function loginStudent(e) {
+    e.preventDefault();
+
+    const rollNo = document.getElementById('rollno').value;
+    const password = document.getElementById('password').value;
+
+    fetch("http://localhost:5500/api/auth/student-login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ rollNo, password })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        localStorage.setItem("student", JSON.stringify(data.student));
+        alert("Login successful");
+        window.location.href = "student-deshbord.html";
+      } else {
+        alert("Invalid credentials");
+      }
+    })
+    .catch(err => {
+      alert("Something went wrong: " + err.message);
+    });
+  }
+</script>
+
+</body>
+</html>

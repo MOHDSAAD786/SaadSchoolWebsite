@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Principal Dashboard</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body {
+      margin: 0;
+      display: flex;
+      min-height: 100vh;
+      background-color: #f0f2f5;
+    }
+    .sidebar {
+      width: 250px;
+      background: #2c3e50;
+      color: white;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 20px;
+    }
+    .sidebar button {
+      padding: 12px;
+      background: #34495e;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-align: left;
+      font-size: 14px;
+    }
+    .sidebar button:hover {
+      background: #3f5873;
+    }
+    .main {
+      flex-grow: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+    .card {
+      background: white;
+      padding: 25px;
+      margin-bottom: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .card h3 { margin-top: 0; color: #2c3e50; }
+    .hidden { display: none; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #f1f1f1;
+    }
+    .form-inline {
+      margin-bottom: 20px;
+    }
+    .form-inline input, .form-inline button {
+      padding: 10px;
+      margin-right: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    .form-inline button {
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .form-inline button:hover {
+      background-color: #3498db;
+    }
+    .logout-btn {
+      margin-top: auto;
+      background: #c0392b;
+      text-align: center;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .logout-btn:hover {
+      background: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Principal Panel</h2>
+  <button onclick="showSection('overview')">📊 Overview</button>
+  <button onclick="showSection('searchTeacher')">🔍 Teacher Details</button>
+  <button onclick="showSection('searchStudent')">🔍 Student Details</button>
+  <button onclick="showSection('attendance')">📋 Attendance</button>
+  <button onclick="showSection('timetable')">📅 Timetable</button>
+  <button onclick="showSection('uploadNotes')">📝 Upload Notes</button>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</div>
+
+<div class="main">
+  <!-- Overview -->
+  <div id="overview" class="card">
+    <h3 id="welcomeMsg">Welcome, Principal</h3>
+    <p id="principalEmail"></p>
+    <!--<p>Total Teachers: <span id="totalTeachers">--</span></p>-->
+    <!--<p>Total Students: <span id="totalStudents">--</span></p>-->
+  </div>
+
+  <!-- Search Teacher -->
+  <div id="searchTeacher" class="card hidden">
+    <h3>Search Teacher by ID</h3>
+    <div class="form-inline">
+      <input type="text" id="teacherIdInput" placeholder="Enter Teacher ID">
+      <button onclick="searchTeacher()">Search</button>
+    </div>
+    <div id="teacherResult"></div>
+  </div>
+
+  <!-- Search Student -->
+  <div id="searchStudent" class="card hidden">
+    <h3>Search Student by Roll Number</h3>
+    <div class="form-inline">
+      <input type="text" id="studentRollInput" placeholder="Enter Roll Number">
+      <button onclick="searchStudent()">Search</button>
+    </div>
+    <div id="studentResult"></div>
+  </div>
+
+  <!-- Attendance -->
+  <div id="attendance" class="card hidden">
+    <h3>View Attendance by Class</h3>
+    <div class="form-inline">
+      <input type="text" id="classInput" placeholder="Enter Class Name (e.g., 6A)">
+      <button onclick="viewAttendance()">View</button>
+    </div>
+    <div id="attendanceResult"></div>
+  </div>
+
+  <!-- Timetable -->
+  <div id="timetable" class="card hidden">
+    <h3>Class Timetable</h3>
+    <div class="form-inline">
+      <input type="text" id="timetableClassInput" placeholder="Enter Class Name (e.g., 10A)">
+      <button onclick="viewTimetable()">View</button>
+    </div>
+    <div id="timetableResult"></div>
+  </div>
+
+  <!-- Upload Notes -->
+  <div id="uploadNotes" class="card hidden">
+    <h3>Upload Notes</h3>
+    <form id="notesForm">
+      <div class="form-inline">
+        <input type="text" id="noteSubject" placeholder="Subject" required>
+        <input type="text" id="noteClass" placeholder="Class (e.g., 6A)" required>
+        <input type="text" id="noteFileUrl" placeholder="File URL" required>
+        <button type="submit">Upload</button>
+      </div>
+      <div id="notesMsg"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+  let principal = null;
+
+  function showSection(id) {
+    const sections = ['overview', 'searchTeacher', 'searchStudent', 'attendance', 'timetable', 'uploadNotes'];
+    sections.forEach(sec => document.getElementById(sec).classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  function logout() {
+    localStorage.removeItem("principal");
+    window.location.href = "principal-login.html";
+  }
+
+  window.onload = async () => {
+    // Check if logged in
+    principal = JSON.parse(localStorage.getItem("principal"));
+    if (!principal) {
+      alert("Please login first");
+      window.location.href = "principal-login.html";
+      return;
+    }
+    // Show overview info
+    document.getElementById("welcomeMsg").innerText = `Welcome, ${principal.name || principal.principalId}`;
+    document.getElementById("principalEmail").innerText = `Email: ${principal.email || ''}`;
+    // Fetch total counts
+    try {
+      const studentsRes = await fetch("http://localhost:5500/api/student/");
+      const students = await studentsRes.json();
+      document.getElementById("totalStudents").innerText = Array.isArray(students)? students.length : '--';
+    } catch (err) {
+      document.getElementById("totalStudents").innerText = '--';
+    }
+    try {
+      const teachersRes = await fetch("http://localhost:5500/api/teacher/");
+      const teachers = await teachersRes.json();
+      document.getElementById("totalTeachers").innerText = Array.isArray(teachers)? teachers.length : '--';
+    } catch (err) {
+      document.getElementById("totalTeachers").innerText = '--';
+    }
+    showSection('overview');
+  };
+
+  async function searchTeacher() {
+    const id = document.getElementById('teacherIdInput').value;
+    try {
+      const res = await fetch(`http://localhost:5500/api/principal/teacher/${id}`);
+      if (!res.ok) throw new Error("Not found");
+      const data = await res.json();
+      const t = data.data;
+      document.getElementById('teacherResult').innerHTML = `
+        <p><strong>ID:</strong> ${t.teacherId}</p>
+        <p><strong>Name:</strong> ${t.name}</p>
+        <p><strong>Class:</strong> ${t.className || ''}</p>
+        <p><strong>Email:</strong> ${t.email || ''}</p>`;
+    } catch (err) {
+      document.getElementById('teacherResult').innerHTML = `<p>Teacher not found</p>`;
+    }
+  }
+
+  async function searchStudent() {
+    const roll = document.getElementById('studentRollInput').value;
+    try {
+      const res = await fetch(`http://localhost:5500/api/principal/student/${roll}`);
+      if (!res.ok) throw new Error("Not found");
+      const data = await res.json();
+      const s = data.data;
+      document.getElementById('studentResult').innerHTML = `
+        <p><strong>Roll No:</strong> ${s.rollNo}</p>
+        <p><strong>Name:</strong> ${s.name}</p>
+        <p><strong>Class:</strong> ${s.className}</p>
+        <p><strong>Email:</strong> ${s.email || ''}</p>`;
+    } catch (err) {
+      document.getElementById('studentResult').innerHTML = `<p>Student not found</p>`;
+    }
+  }
+
+  async function viewAttendance() {
+    const className = document.getElementById('classInput').value;
+    try {
+      const res = await fetch(`http://localhost:5500/api/principal/attendance/${className}`);
+      if (!res.ok) throw new Error("Not found");
+      const data = await res.json();
+      const arr = data.data; // array of {rollNo, name, attendance}
+      if (Array.isArray(arr) && arr.length) {
+        let html = `<h4>Attendance for ${className}</h4>
+          <table><thead><tr><th>Roll No</th><th>Name</th><th>Details</th></tr></thead><tbody>`;
+        arr.forEach(item => {
+          html += `<tr>
+            <td>${item.rollNo}</td>
+            <td>${item.name}</td>
+            <td><button onclick='showAttendanceDetail(${JSON.stringify(JSON.stringify(item.attendance))})'>View</button></td>
+          </tr>`;
+        });
+        html += `</tbody></table>`;
+        document.getElementById('attendanceResult').innerHTML = html;
+      } else {
+        document.getElementById('attendanceResult').innerHTML = `<p>No students found in ${className}</p>`;
+      }
+    } catch (err) {
+      document.getElementById('attendanceResult').innerHTML = `<p>Error fetching attendance</p>`;
+    }
+  }
+
+  function showAttendanceDetail(attJson) {
+    // attJson is JSON string of attendance array
+    const arr = JSON.parse(attJson);
+    let html = `<h4>Attendance Details</h4>
+      <table><thead><tr><th>Date</th><th>Status</th></tr></thead><tbody>`;
+    arr.forEach(rec => {
+      html += `<tr><td>${rec.date}</td><td>${rec.status}</td></tr>`;
+    });
+    html += `</tbody></table>`;
+    // show in a modal or replace attendanceResult; here simply alert or console:
+    const w = window.open('', 'Attendance Detail', 'width=400,height=400');
+    w.document.write(html);
+  }
+
+  async function viewTimetable() {
+    const className = document.getElementById('timetableClassInput').value;
+    try {
+      const res = await fetch(`http://localhost:5500/api/timetable/${className}`);
+      if (!res.ok) throw new Error("Not found");
+      const arr = await res.json(); // array of {className, day, slots}
+      if (Array.isArray(arr) && arr.length) {
+        let html = `<h4>Timetable for ${className}</h4>
+          <table><thead><tr><th>Day</th>`;
+        // header columns equal slots length
+        arr[0].slots.forEach((_, idx) => html += `<th>Period ${idx+1}</th>`);
+        html += `</tr></thead><tbody>`;
+        arr.forEach(item => {
+          html += `<tr><td>${item.day}</td>`;
+          item.slots.forEach(slot => {
+            html += `<td>${slot}</td>`;
+          });
+          html += `</tr>`;
+        });
+        html += `</tbody></table>`;
+        document.getElementById('timetableResult').innerHTML = html;
+      } else {
+        document.getElementById('timetableResult').innerHTML = `<p>No timetable found</p>`;
+      }
+    } catch (err) {
+      document.getElementById('timetableResult').innerHTML = `<p>Error fetching timetable</p>`;
+    }
+  }
+
+  // Notes upload
+  document.getElementById('notesForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const subject = document.getElementById('noteSubject').value;
+    const className = document.getElementById('noteClass').value;
+    const fileUrl = document.getElementById('noteFileUrl').value;
+    try {
+      const res = await fetch(`http://localhost:5500/api/principal/notes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, className, fileUrl })
+      });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('notesMsg').innerText = 'Note uploaded successfully';
+      } else {
+        document.getElementById('notesMsg').innerText = 'Failed to upload note';
+      }
+    } catch (err) {
+      document.getElementById('notesMsg').innerText = 'Error uploading note';
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -58,7 +58,7 @@
     const teacherId = document.getElementById('teacherid').value;
     const password = document.getElementById('password').value;
 
-    fetch("http://localhost:5500/api/auth/teacher-login", {
+    fetch("https://saadschoolwebsite.onrender.com/api/auth/teacher-login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ teacherId, password })

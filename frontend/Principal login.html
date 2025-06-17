@@ -57,7 +57,7 @@
       const principalId = document.getElementById('principalid').value;
       const password = document.getElementById('password').value;
 
-      fetch("http://localhost:5500/api/auth/principal-login", {
+      fetch("https://saadschoolwebsite.onrender.com/api/auth/principal-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ principalId, password })

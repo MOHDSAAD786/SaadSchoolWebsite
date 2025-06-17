@@ -121,7 +121,8 @@
       }
 
       try {
-        const res = await fetch(`http://localhost:5500/api/timetable/${teacher.className}`);
+        const res = await fetch(`https://saadschoolwebsite.onrender.com/api/timetable/${teacher.className}`
+);
         const timetable = await res.json();
 
         if (Array.isArray(timetable) && timetable.length > 0) {

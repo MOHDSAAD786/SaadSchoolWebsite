@@ -9,7 +9,6 @@ const studentRoutes = require('./routes/student');
 const teacherRoutes = require('./routes/teacher');
 const principalRoutes = require('./routes/principal');
 const adminRoutes = require('./routes/admin');
-const newAdmissionRoute = require('./routes/newAdmission');
 
 dotenv.config();
 
@@ -34,7 +33,7 @@ app.use('/api/student', studentRoutes);
 app.use('/api/teacher', teacherRoutes);
 app.use('/api/principal', principalRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/newAdmission', newAdmissionRoute);
+
 
 
 const PORT = process.env.PORT || 5500;

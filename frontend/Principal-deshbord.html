@@ -204,14 +204,14 @@
     document.getElementById("principalEmail").innerText = `Email: ${principal.email || ''}`;
     // Fetch total counts
     try {
-      const studentsRes = await fetch("http://localhost:5500/api/student/");
+      const studentsRes = await fetch('https://saadschoolwebsite.onrender.com/api/student/');
       const students = await studentsRes.json();
       document.getElementById("totalStudents").innerText = Array.isArray(students)? students.length : '--';
     } catch (err) {
       document.getElementById("totalStudents").innerText = '--';
     }
     try {
-      const teachersRes = await fetch("http://localhost:5500/api/teacher/");
+      const teachersRes = await fetch('https://saadschoolwebsite.onrender.com/api/teacher/');
       const teachers = await teachersRes.json();
       document.getElementById("totalTeachers").innerText = Array.isArray(teachers)? teachers.length : '--';
     } catch (err) {
@@ -223,7 +223,8 @@
   async function searchTeacher() {
     const id = document.getElementById('teacherIdInput').value;
     try {
-      const res = await fetch(`http://localhost:5500/api/principal/teacher/${id}`);
+      const res = await fetch(`https://saadschoolwebsite.onrender.com/api/principal/teacher/${id}`
+);
       if (!res.ok) throw new Error("Not found");
       const data = await res.json();
       const t = data.data;
@@ -240,7 +241,8 @@
   async function searchStudent() {
     const roll = document.getElementById('studentRollInput').value;
     try {
-      const res = await fetch(`http://localhost:5500/api/principal/student/${roll}`);
+      const res = await fetch(`https://saadschoolwebsite.onrender.com/api/principal/student/${roll}`
+);
       if (!res.ok) throw new Error("Not found");
       const data = await res.json();
       const s = data.data;
@@ -257,7 +259,8 @@
   async function viewAttendance() {
     const className = document.getElementById('classInput').value;
     try {
-      const res = await fetch(`http://localhost:5500/api/principal/attendance/${className}`);
+      const res = await fetch(`https://saadschoolwebsite.onrender.com/api/principal/attendance/${className}`
+);
       if (!res.ok) throw new Error("Not found");
       const data = await res.json();
       const arr = data.data; // array of {rollNo, name, attendance}
@@ -298,7 +301,8 @@
   async function viewTimetable() {
     const className = document.getElementById('timetableClassInput').value;
     try {
-      const res = await fetch(`http://localhost:5500/api/timetable/${className}`);
+      const res = await fetch(`https://saadschoolwebsite.onrender.com/api/timetable/${className}`
+);
       if (!res.ok) throw new Error("Not found");
       const arr = await res.json(); // array of {className, day, slots}
       if (Array.isArray(arr) && arr.length) {
@@ -331,7 +335,7 @@
     const className = document.getElementById('noteClass').value;
     const fileUrl = document.getElementById('noteFileUrl').value;
     try {
-      const res = await fetch(`http://localhost:5500/api/principal/notes`, {
+      const res = await fetch('https://saadschoolwebsite.onrender.com/api/principal/notes' , {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ subject, className, fileUrl })
